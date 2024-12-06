@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu - Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+        .narration-container { max-height: 400px; overflow-y: auto; margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; background-color: #fafafa; }
+        .narration { margin-bottom: 10px; padding: 10px; border-radius: 5px; }
+        .user-message { background-color: #d1e7ff; text-align: left; }
+        .server-message { background-color: #e2e2e2; text-align: left; }
+        .action-form, .topic-form { display: flex; flex-direction: column; }
+        .action-form input, .topic-form select { padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; }
+        .action-form button, .topic-form button { padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .action-form button:hover, .topic-form button:hover { background-color: #0056b3; }
+        .video-container { display: none; margin-top: 20px; }
+        iframe { width: 100%; height: 315px; border: none; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Bienvenue dans l'entraînement à la cybersécurité</h1>
+
+    <!-- Formulaire de sélection des thèmes -->
+    <div class="topic-form">
+        <label for="topic">Choisissez un thème :</label>
+        <select id="topic" name="topic">
+            <optgroup label="Bonnes pratiques">
+                <option value="Les mots de passe">Les mots de passe</option>
+                <option value="La sécurité sur les réseaux sociaux">La sécurité sur les réseaux sociaux</option>
+                <option value="La sécurité des appareils mobiles">La sécurité des appareils mobiles</option>
+                <option value="Les sauvegardes">Les sauvegardes</option>
+                <option value="Les mises à jour">Les mises à jour</option>
+                <option value="La sécurité des usages pro-perso">La sécurité des usages pro-perso</option>
+            </optgroup>
+            <optgroup label="Risques">
+                <option value="L'hameçonnage">L'hameçonnage</option>
+                <option value="Les rançongiciels">Les rançongiciels</option>
+                <option value="L'arnaque au faux support technique">L'arnaque au faux support technique</option>
+            </optgroup>
+        </select>
+        <button id="select-topic">Commencer</button>
+    </div>
+
+    <!-- Zone de narration (historique des messages) -->
+    <div class="narration-container" id="narration-container"></div>
+
+    <!-- Zone de saisie d'action -->
+    <div>
+        <form class="action-form" id="action-form" style="display:none;">
+            <label for="action">Répondez à la question :</label>
+            <input type="text" id="action" name="action" placeholder="Votre réponse...">
+            <button type="submit">Envoyer</button>
+        </form>
+    </div>
+
+    <!-- Conteneur pour la vidéo -->
+    <div class="video-container" id="video-container">
+        <iframe id="video-player" allowfullscreen></iframe>
+    </div>
+</div>
+
+<script>
+document.getElementById('select-topic').addEventListener('click', function () {
+    var topic = document.getElementById('topic').value;
+
+    if (!topic) {
+        alert("Veuillez sélectionner un thème.");
+        return;
+    }
+
+    var narrationContainer = document.getElementById('narration-container');
+
+    // Ajouter le thème choisi au dialogue
+    var topicMessage = document.createElement('div');
+    topicMessage.classList.add('narration', 'server-message');
+    topicMessage.innerText = `Thème choisi : ${topic}`;
+    narrationContainer.appendChild(topicMessage);
+
+    // Faire défiler automatiquement vers le bas
+    narrationContainer.scrollTop = narrationContainer.scrollHeight;
+
+    // Afficher la vidéo correspondante
+    var videoUrl = '';
+    switch (topic) {
+        case 'Les mots de passe':
+            videoUrl = 'https://www.youtube.com/embed/d0b1AHvO1WU';
+            break;
+        case 'La sécurité sur les réseaux sociaux':
+            videoUrl = 'https://www.youtube.com/embed/fSuu-OkGuak';
+            break;
+        case 'La sécurité des appareils mobiles':
+            videoUrl = 'https://www.youtube.com/embed/fSuu-OkGuak';
+            break;
+        case 'Les sauvegardes':
+            videoUrl = 'https://www.youtube.com/embed/kOAdEKU86nI';
+            break;
+        case 'Les mises à jour':
+            videoUrl = 'https://www.youtube.com/embed/ZR3Gf8NKkc4';
+            break;
+        case 'La sécurité des usages pro-perso':
+            videoUrl = 'https://www.youtube.com/embed/lWZ_6irKzb0';
+            break;
+        case 'L\'hameçonnage':
+            videoUrl = 'https://www.youtube.com/embed/teft55oTqHU';
+            break;
+        case 'Les rançongiciels':
+            videoUrl = 'https://www.youtube.com/embed/i2SRKqILdh0';
+            break;
+        case 'L\'arnaque au faux support technique':
+            videoUrl = 'https://www.youtube.com/embed/zuJUXDZg_DI';
+            break;
+        default:
+            break;
+    }
+
+    if (videoUrl) {
+        var videoContainer = document.getElementById('video-container');
+        var videoPlayer = document.getElementById('video-player');
+        videoPlayer.src = videoUrl;
+        videoContainer.style.display = 'block';  // Afficher la vidéo
+    }
+
+    // Afficher le formulaire d'action
+    document.getElementById('action-form').style.display = 'block';
+});
+
+// Gestion de l'envoi de la réponse de l'utilisateur
+document.getElementById('action-form').addEventListener('submit', function (e) {
+    e.preventDefault();  // Empêche la soumission normale du formulaire
+
+    var action = document.getElementById('action').value;
+    var topic = document.getElementById('topic').value;
+
+    if (!action) {
+        alert("Veuillez entrer une réponse.");
+        return;
+    }
+
+    var narrationContainer = document.getElementById('narration-container');
+
+    // Ajouter la réponse de l'utilisateur à la narration
+    var userMessage = document.createElement('div');
+    userMessage.classList.add('narration', 'user-message');
+    userMessage.innerText = action;
+    narrationContainer.appendChild(userMessage);
+
+    // Faire défiler automatiquement vers le bas
+    narrationContainer.scrollTop = narrationContainer.scrollHeight;
+
+    // Envoi de la réponse au serveur Flask
+    fetch(`/action?action=${encodeURIComponent(action)}&topic=${encodeURIComponent(topic)}`)
+        .then(response => response.text())
+        .then(data => {
+            // Ajouter la réponse du bot dans la même boîte de narration
+            var serverMessage = document.createElement('div');
+            serverMessage.classList.add('narration', 'server-message');
+            serverMessage.innerText = data;  // Afficher la réponse entière
+            narrationContainer.appendChild(serverMessage);
+
+            // Faire défiler automatiquement vers le bas
+            narrationContainer.scrollTop = narrationContainer.scrollHeight;
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue lors de l\'envoi de votre réponse.');
+        });
+});
+</script>
+
+
+</body>
+</html>
